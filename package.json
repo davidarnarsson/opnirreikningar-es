@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "bin": {
+    "opnirreikingar": "./index.js"
+  },
   "dependencies": {
     "axios": "^0.16.2",
     "elasticsearch": "^13.3.1",

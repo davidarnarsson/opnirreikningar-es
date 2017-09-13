@@ -17,7 +17,7 @@ require("rxjs/add/operator/do");
 
 const argv = require("yargs")
   .usage(
-    "Usage: -a:bool [auto fetch max date] -d [from date, YYYY-MM-DD] -t [to date, YYYY-MM-DD] -e [elastic host (localhost:9200)] -i [request interval, 1000] -o [request timeout, 3000] -b [batch size] -in [index-name] -it [index type]"
+  "Usage: -a:bool [auto fetch max date] -d [from date, YYYY-MM-DD] -t [to date, YYYY-MM-DD] -e [elastic host (localhost:9200)] -i [request interval, 1000] -o [request timeout, 3000] -b [batch size] -in [index-name] -it [index type]"
   )
   .demandOption(["e"]).argv;
 
@@ -54,11 +54,14 @@ async function run() {
 
   const subject = new BehaviorSubject([]);
 
+  // choo choo!
+  subject.next(makeBatchRequest(0));
+
   Observable.interval(argv.i || 1000)
     .timeout(argv.o || 3000)
     .zip(subject.asObservable(), (a, b) => b)
     .map(({ fromDate, toDate, start, length }) => {
-      console.log(`Request: ${batchSize * start} - ${batchSize * start + batchSize}`);
+      console.log(`Request: ${start} - ${start + batchSize}`);
       return getInvoices(fromDate, toDate, start, length);
     })
     .concatAll()
@@ -79,8 +82,7 @@ async function run() {
     })
     .subscribe(null, e => console.error(e), () => console.log("Complete!"));
 
-    // choo choo!
-    subject.next(makeBatchRequest(0));
+
 }
 
 try {
