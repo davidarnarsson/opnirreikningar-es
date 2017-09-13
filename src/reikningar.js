@@ -15,6 +15,19 @@ async function maxTimePeriod() {
 
 let draw = 0;
 
+async function getInvoiceLines(invoiceId) {
+  const { data } = await axios.get(`${BASE_URL}/data_pagination_line`, {
+    params: {
+      invoice_id: invoiceId,
+      draw: draw++,
+      start: 0,
+      length: 100000
+    }
+  });
+
+  return data.data;
+}
+
 async function getInvoices(fromDate, toDate, start, length) {
   try {
     const { data } = await axios.get(`${BASE_URL}/data_pagination_search`, {
@@ -85,5 +98,6 @@ async function getInvoices(fromDate, toDate, start, length) {
 
 module.exports = {
   maxTimePeriod,
-  getInvoices
+  getInvoices,
+  getInvoiceLines
 };
